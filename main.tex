@@ -1,0 +1,383 @@
+\documentclass[titlepage,12pt]{article}
+
+\usepackage[english]{babel}
+
+\usepackage[letterpaper, top=2cm, bottom=2cm, left=3cm, right=3cm, marginparwidth=1.75cm]{geometry}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{caption}
+\usepackage{url}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{setspace}
+\doublespacing
+
+\date{}
+\title{Deriving a Formula to Count the Number of Bouncy Numbers within a Range}
+
+\pagestyle{plain}
+
+\begin{document}
+\begin{titlepage}
+    \maketitle
+\end{titlepage}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+\section{Introduction}
+Bouncy numbers are non-negative integers whose digits are in neither increasing nor decreasing order\cite{OEIS}. A non-bouncy number is a non-negative integer which is not bouncy.
+Lots of logic puzzles and mathematical problems exist using these two definitions. Given a single number, it is easy to tell whether it is bouncy or not.
+However, the challenging part comes when asked to count how many bouncy numbers exist within a range.
+
+\section{Aim}
+The aim of this paper is to figure out a mathematical formula that will count how many bouncy numbers exist within specific ranges of non-negative integers of variable boundaries.
+
+\section{Rationale}
+I chose to investigate this topic because I have a great passion for mathematical challenges. I first stumbled upon two simpler versions of this problem\cite{ProjectEuler112}\cite{ProjectEuler113} on a website called ProjectEuler which has an archive of hard maths and coding problems.
+The concept of bouncy numbers which they introduced fascinated me. Therefore, I decided to take it a step further and explore more formulas and relations of these numbers through my Internal Assessment in mathematics.
+
+\section{Mathmatical Concepts}
+Throughout this paper I am going to be using a lot of repeated summations and multiplications using the $\sum$ and $\prod$ notation. The capital sigma used for summation simply means:
+\[\sum_{i=a}^{b} f(i) = f(a) + f(a+1) + ... + f(b)\]
+The same goes for the capital pi symbol but instead of summing up the functions it multiplies them:
+\[\prod_{i=a}^{b} f(i) = f(a) \times f(a+1) \times ... \times f(b)\]
+If $a > b$ in either of the two cases then an empty sum or empty product will be produced respectively. The empty sum is equal to zero whereas the empty product is equal to one.
+\\
+\\
+For summation I am going to encounter some arithmetic sequences where I will use the arithmetic sequence summation formula:
+\[\sum_{i=1}^{n} a_i = \frac{n}{2}(2a_1 + d \times (n-1))\]
+Where d is the common difference between consecutive terms. Furthermore, I am going to be using the summation of squares formula\cite{Formulas}:
+\[\sum_{i=1}^{n} i^2 = \frac{n(n+1)(2n+1)}{6}\]
+These are the main formulas I take for granted when using them throughout the paper.
+\newpage
+
+\section{Graphical Analysis}
+First of all, I wanted to get an idea of how fast the number of bouncy numbers grew. Therefore, I wrote up a C++ program that calculated how many bouncy numbers existed starting from 0 and ending at 1 million. In the range $[0,x]$ there are $x+1$ integers, meaning that a naive upper limit for the number of bouncy numbers is $y=x+1$. I graphed the results of the C++ program and the line $y=x+1$ using MatLab and I got the following results:
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \includegraphics[width=\linewidth]{../Images/Graph+Max(0-1e3).png}
+        \caption{$x\in[0,10^3]$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \includegraphics[width=\linewidth]{../Images/Graph+Max(0-1e4).png}
+        \caption{$x\in[0,10^4]$}
+    \end{subfigure}
+
+    \vspace{0.5cm}
+
+    \begin{subfigure}[t]{0.48\textwidth}
+        \includegraphics[width=\linewidth]{../Images/Graph+Max(0-1e5).png}
+        \caption{$x\in[0,10^5]$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \includegraphics[width=\linewidth]{../Images/Graph+Max(0-1e6).png}
+        \caption{$x\in[0,10^6]$}
+    \end{subfigure}
+
+    \caption{\label{fig:graphs} Graphs of $y=\text{number of bouncy bumbers below } x$(blue) vs $y=x+1$(yellow) for different domains}
+\end{figure}
+
+\noindent
+From graph (a) we can see that there are no bouncy numbers bellow 100. This makes sense as when you have any two digit number, the first digit is either greater than, smaller than or equal to the second. So all 2 digit integers have increasing or decreasing digits making them non-bouncy. Integers whose digits are all equal are also considered non-bouncy. This means that the first bouncy number is 101.
+\\
+\\
+By observing all 4 graphs we can see how the frequency of bouncy numbers increases the more we expand the domain. This means that there are increasingly more bouncy than non-bouncy numbers as you consider greater and greater numbers. This makes intuitive sense as if you were to pick a random n-digit number, the more digits it has, the lower the chance its digits will be ordered. So while the blue graph starts to resemble a linear graph as we consider greater numbers, in reality, its slope between the origin and a point on the graph tends to increase as $x$ increases but it will never become greater than 1, which is the slope of the $y=x+1$ line, as it can never gain more than 1 bouncy number per 1 new number considered. Furthermore, since this function is cumulative, it will keep increasing(or staying constant) as x increases.
+\\
+\\
+If the blue graph were to be described by the function $b(x)$, then the previous statements can be described mathematically as $0 \leq \frac{d}{dx}b(x) \leq 1$, $b(x) < x+1$ and $\lim_{x \Rightarrow  \infty}\frac{b(x)}{x+1} = 1$.
+\\
+\\
+These graphs do not allow me to derive a formula directly, however, it is evident that there is a change in the behaviour of the blue graph as we considered numbers of increasingly more digits.
+
+\section{Definitions and Relations}
+As explained in the previous section, I will study how to count bouncy numbers of $n$ digits, so in the range of $[10^{n-1}, 10^n]$, as the number of digits seems to play a big role in the frequency of bouncy numbers. However, it will be easier to count how many $n$-digit non-bouncy numbers exist, and then calculate how many bouncy numbers there are. This is easily calculated through the following formula: $\text{\# of bouncy} = \text{\# of numbers considered} - \text{\# of non bouncy}$.
+\\
+\\
+There are three types of non bouncy numbers, those with digits in increasing order, in decreasing order, and with all digits being equal. Furthermore, it is worth noting that the number of "increasing" non-bouncy numbers decreases as the most significant digit of an n-digit number increases, whereas the number of "decreasing" non bouncy numbers increases. Therefore, it would be more beneficial to cut down the range considered even further to $[k*10^{n-1}, (k+1)*10^{n-1}-1]$, where k is an integer and $0 \leq k \leq 9$.
+\\
+\\
+With these limitations in mind, we can create a function $f_n$ to calculate the amount of non-bouncy numbers like so:
+\begin{equation} \label{eq1}
+    \begin{split}
+        f_n(k)=inc_n(k) + dec_n(k)
+    \end{split}
+\end{equation}
+where k and n are integers, $n \geq 1$, $0 \leq k \leq 9$, the functions work in the range $[k*10^{n-1}, (k+1)*10^{n-1}-1]$ and:
+\begin{align*}
+    f_n(k) &= \text{number of non bouncy numbers of n digits}\\
+    inc_n(k) &= \text{number of non bouncy numbers with increasing or equal digits of n digits}\\
+    dec_n(k) &= \text{number of non bouncy numbers with decreasing digits of n digits}
+\end{align*}
+\noindent
+For the purposes of this paper, leading zeros on a number count as digits. So, $0192$ is a 4 digit number but $192$ is 3 digits. This has no affect on $inc_n$ since 0 is the least valued digit anyways, but it makes $dec_n(0)=0$ for all n which is more convenient for the next derived relation between $inc_n$ and $dec_n$.\\\\
+If you pick any decreasing number, you can find a corresponding increasing number. This is possible by substituting 0 with 9, 1 with 8, 2 with 7 etc. So basically, if we get any digit $p$, and we substitute it with $9-p$, the new number we have created is an increasing number. The opposite also holds true. According to this logic:
+\begin{equation} \label{eq2}
+    \begin{split}
+        dec_n(k)=inc_n(9-k)-1
+    \end{split}
+\end{equation}
+This is because we are swapping the most significant digit of the n-digit decreasing non bouncy number with its corresponding value in the increasing non bouncy number. The $-1$ stems from the fact that the increasing function also counts non-bouncy numbers of equal digits, for which there is only one in the range $[k*10^{n-1}, (k+1)*10^{n-1}-1]$. So we can rewrite the expression for $f_n$:
+\begin{equation} \label{eq3}
+    \begin{split}
+        f_n(k) = inc_n(k) + inc_n(9-k) - 1
+    \end{split}
+\end{equation}
+\noindent
+One interesting thing to notice is that if we take any k, then for a non bouncy increasing number to exist starting with k, its second digit needs to be at least k. Therefore, the second digit can be $k$, $k+1$, $k+2$, ..., $9$. And after that second digit we just want to have an increasing number. So if we count all $(n-1)$-digit increasing numbers who start with a digit $\geq k$ then we will have all $n$-digit increasing numbers who start with the digit $k$. This is the same as saying:
+\begin{equation} \label{eq4}
+    \begin{split}
+        inc_n(k) = \sum_{i=k}^{9} inc_{n-1}(i)
+    \end{split}
+\end{equation}
+Using equation \ref{eq2}, for the decreasing function this would become:
+\begin{equation} \label{eq5}
+    \begin{split}
+        dec_n(k) = inc_n(9-k) - 1 = \sum_{i=9-k}^{9} inc_{n-1}(i) - 1
+    \end{split}
+\end{equation}
+We can plug in these results into $f_n$:
+\begin{equation} \label{eq6}
+    \begin{split}
+        f_n(k) = \sum_{i=k}^{9} inc_{n-1}(i) + \sum_{i=9-k}^{9} inc_{n-1}(i) - 1
+    \end{split}
+\end{equation}
+
+\section{Calculating f for small n}
+To better understand how these functions behave we can try evaluating them for some small values of n.
+\subsection{n=1}
+For n=1, we are considering the range [0, 9], which are all numbers that have only equal digits meaning that they are part of the $inc_1$ function but not the $dec_1$. So:
+\begin{align*}
+    inc_1(k) &= 1\\
+    dec_1(k) &= 0\\
+    f_1(k) &= 1
+\end{align*}
+
+\subsection{n=2}
+For n=2, we are considering the range $[0, 99]$, which are all non bouncy numbers. For k=0, we have the range $[0, 9]$ so $inc_2(0)=10$.
+For k=1, valid cases are 11, 12, 13, 14, 15, 16, 17, 18, 19. So $inc_2(1)=9$. Then for k=2, we have valid cases from 22-29 so $inc_2(2)=8$. For k=3 we have valid cases from 33-39, and so on and so forth until k=9 in which we only have one valid case, 99.
+So for each increase in k, we get one less valid case since we are removing the case where the second digit was k. This is because the new first digit is $k+1$ and $k+1 > k$, which transforms this case into a decreasing non bouncy number. With this logic we get:
+\begin{align*}
+    inc_2(k) &= 10-k\\
+    dec_2(k) &= inc_2(9-k) - 1 = 10-(9-k)-1= k\\
+    f_2(k) &= inc_2(k) + dec_2(k) = 10-k + k = 10
+\end{align*}
+This means that $f_2$ is equal to 10 no matter what $k$ is, which means that all values in the range $[0, 99]$ are non bouncy, which checks out with what we have already discovered.
+
+\subsection{n=3}
+For $n=3$ we are considering the range $[0, 999]$. This is harder to calculate by hand so I'll use relation \ref{eq4} to calculate $inc_3$:
+\begin{align*}
+    inc_3(k) &= \sum_{i=k}^{9} inc_2(i) = \sum_{i=k}^{9} (10-i) = \sum_{i=k}^{9} 10 - \sum_{i=k}^{9} i\\
+    inc_3(k) &= 10 \times (10-k) - \frac{(10-k)(2k+(9-k))}{2}\\
+    inc_3(k) &= (10-k)(10-\frac{k+9}{2}) = \frac{(10-k)(11-k)}{2}
+\end{align*}
+Using \ref{eq3} for $f_3$ we get:
+\begin{align*}
+    f_3(k) &= inc_3(k) + inc_3(9-k) - 1 = \frac{(10-k)(11-k)}{2} + \frac{(10-(9-k))(11-(9-k))}{2} - 1\\
+    f_3(k) &= k^2 - 9k + 55
+\end{align*}
+So $f_3$ and $inc_3$ are both quadratics.
+
+\subsection{n=4}
+For $n=4$ we are considering the range $[0, 9999]$. Using \ref{eq4} we get:
+\begin{equation*}
+    \begin{split}
+        inc_4(k) &= \sum_{i=k}^{9} inc_3(i) = \sum_{i=k}^{9} \frac{(10-i)(11-i)}{2} = \sum_{i=k}^{9} \Bigg(55-\frac{21}{2}i+\frac{i^2}{2}\Bigg)\\
+        inc_4(k) &= \sum_{i=k}^{9} 55 - \frac{21}{2}\sum_{i=k}^{9}i + \frac{1}{2}\sum_{i=k}^{9}i^2 = \sum_{i=k}^{9} 55 - \frac{21}{2}\sum_{i=k}^{9}i + \frac{1}{2}\Bigg(\sum_{i=0}^{9}i^2 - \sum_{i=0}^{k-1}i^2\Bigg)\\
+        inc_4(k) &= 55(10-k) - \frac{21}{2} \times \frac{(10-k)(2k+(9-k))}{2} + \frac{9(9+1)(2 \times 9 + 1)}{12} \\
+        &- \frac{(k-1)k(2 \times (k-1) + 1)}{12}\\
+        inc_4(k) &= 550-55k - \frac{-21k^2+21k+1890}{4} + \frac{285}{2} - \frac{2k^3  - 3k^2 + k}{12}\\
+        inc_4(k) &= -\frac{k^3}{6} + \frac{11k^2}{2} - \frac{181k}{3} + 220\\
+        inc_4(k) &= \frac{(10-k)(11-k)(12-k)}{6}
+    \end{split}
+\end{equation*}
+Using \ref{eq3} we get:
+\begin{align*}
+    f_4(k) &= inc_3(k) + inc_3(9-k) - 1\\
+    f_4(k) &= \frac{(10-k)(11-k)(12-k)}{6} + \frac{(10-(9-k))(11-(9-k))(12-(9-k))}{6} - 1\\
+    f_4(k) &= \frac{1}{2}(13k^2 - 117k + 440)
+\end{align*}
+\noindent
+After figuring out these two functions for $n=4$, I realised that this was not going anywhere so I instead tried to look for a pattern which I could then try to prove.
+
+\section{Proof by Induction}
+We seem to be getting quite different $f_n$ functions for each calculated n, but there is a pattern that is emerging for the $inc_n$ function. What if we could take advantage of that?
+At each new $inc_n$ calculated, we keep the old one but we just add an extra factor. We can observe that:
+\begin{align*}
+    \frac{inc_2(k)}{inc_1(k)} &= \frac{10-k}{1}\\
+    \frac{inc_3(k)}{inc_2(k)} &= \frac{11-k}{2}\\
+    \frac{inc_4(k)}{inc_3(k)} &= \frac{12-k}{3}
+\end{align*}
+This is starting to resemble a new relationship between two consecutive terms of the function so a proof by induction seems fitting. The cases above will be the base cases of the induction proof.
+\subsection{Inductive Hypothesis}
+Looking at the previous ratios, a reasonable hypothesis that can be formed is:
+\begin{align*}
+    inc_n(k) =  \frac{8+n-k}{n-1} \times inc_{n-1}(k)
+\end{align*}
+This is a recursive way of calculating $inc_n$, if we expand it further we get:
+\begin{align*}
+    inc_n(k) &=  \frac{(8+n-k)(7+n-k)...(10-k)}{(n-1)(n-2)...(1)} \times inc_{1}(k)\\
+    inc_n(k) &= \frac{1}{(n-1)!} \prod_{i=10}^{8+n} (i-k)
+\end{align*}
+Let's assume that this formula works for $n=m$.
+
+\subsection{Inductive Step}
+Now to prove that it is true for $n=m+1$, we need to prove:
+\[inc_{m+1}(k) = \frac{1}{m!} \prod_{i=10}^{9+m} (i-k)\]
+Starting with equation \ref{eq4}:
+\begin{align*}
+    inc_{m+1}(k) &= \sum_{i=k}^{9} inc_m(i) = \sum_{i=k}^{9} \Bigg(\frac{1}{(m-1)!} \prod_{p=10}^{8+m} (p-i)\Bigg)
+\end{align*}
+Let's make it easier to manipulate by letting $k=10-a$ and $i=10-j$ to get:
+\begin{align*}
+    inc_{m+1}(k) &= \sum_{j=1}^{a} inc_m(10-j) = \frac{1}{(m-1)!} \sum_{j=1}^{a} (8+m-(10-j))(7+m-(10-j))...(10-(10-j))\\
+    inc_{m+1}(k) &=  \frac{1}{(m-1)!} \sum_{j=1}^{a} (j+m-2)(j+m-3)...(j) = \frac{1}{(m-1)!} \sum_{j=1}^{a} \prod_{p=0}^{m-2}(j+p)\\
+\end{align*}
+So we have arrived to the conclusion that:
+\begin{equation} \label{eq7}
+    \begin{split}
+        inc_{m+1}(k) = \frac{1}{(m-1)!} \sum_{j=1}^{a} \prod_{p=0}^{m-2}(j+p)
+    \end{split}
+\end{equation}
+It is difficult to figure out the summation of that product directly, so instead I will consider a new function $h(j) = \prod_{p=0}^{m-1}(j+p)$.\\
+We observe that the difference between two consecutive terms is:
+\begin{align*}
+    h(j)-h(j-1) &= \prod_{p=0}^{m-1}(j+p) - \prod_{p=0}^{m-1}(j+p-1) = [(j+m-1) - (j-1)]\prod_{p=0}^{m-2}(j+p)\\
+    h(j)-h(j-1) &= m\prod_{p=0}^{m-2}(j+p)
+\end{align*}
+This means that we can rewrite the sum:
+\begin{align*}
+    \sum_{j=1}^{a} \prod_{p=0}^{m-2}(j+p) &= \sum_{j=1}^{a} \frac{h(j)-h(j-1)}{m}\\
+    &= \frac{1}{m}(h(1) - h(0) + h(2) - h(1) + ... + h(a) - h(a-1))\\
+    &= \frac{1}{m}(h(a) - h(0)) = \frac{h(a)}{m}\\
+    &= \frac{1}{m}\prod_{p=0}^{m-1}(a+p)
+\end{align*}
+Getting back to equation \ref{eq7} and plugging in our findings we get:
+\begin{align*}
+    inc_{m+1}(k) &= \frac{1}{(m-1)!} \sum_{j=1}^{a} \prod_{p=0}^{m-2}(j+p)\\
+    &= \frac{1}{(m-1)!} \times \frac{1}{m}\prod_{p=0}^{m-1}(a+p)\\
+    &= \frac{1}{m!}\prod_{p=0}^{m-1}(a+p)\\
+    &= \frac{1}{m!}\prod_{p=0}^{m-1}(10-k+p)\\
+    &= \frac{1}{m!}\prod_{q=10}^{m+9}(q-k)
+\end{align*}
+This is the result we were looking for. Hence, since the hypothesis works for $n=m+1$ given that it works for $n=m$, then due to the principle of Induction, the hypothesised formula is correct.\\\\
+The only base case we haven't checked for is when $n=1$, we can simply test if it works:
+\begin{align*}
+    inc_1(k) &= \frac{1}{(1-1)!} \prod_{i=10}^{8+1} (i-k)\\
+    &= \prod_{i=10}^{9} (i-k) = 1
+\end{align*}
+The product is evaluated like that because the lower bound of the product is greater than the upper bound, which produces an empty product(=1). $inc_1$ is indeed equal to just 1 so this formula holds true for all valid $n$ and $k$.
+
+\section{Final Formulas}
+Having derived a formula for the $inc_n$ function, we can also figure out what is $dec_n$ using \ref{eq2}:
+\begin{align*}
+    dec_n(k) &= inc_n(9-k) - 1 = \frac{1}{(n-1)!} \prod_{i=10}^{8+n} (i-(9-k)) - 1\\
+    &= \frac{1}{(n-1)!} \prod_{j=1}^{n-1} (k+j) - 1
+\end{align*}
+\noindent
+We can now create a formula for counting bouncy numbers in a range. Let's call this new function $g_n(k)$, which works similarly to $f_n$ but counts bouncy instead of non bouncy n-digit numbers. The range it considers is again $[k\times10^{n-1}, (k+1)\times10^{n-1}-1]$, where $0 \leq k \leq 9$ and $n \geq 1$.\\
+The mathematical definition is:
+\begin{align*}
+    g_n(k) &= 10^{n-1} - f_n(k)\\
+    &= 10^{n-1} - (inc_n(k) + dec_n(k))\\
+    &= 10^{n-1} - \frac{1}{(n-1)!} \prod_{i=10}^{8+n} (i-k) - \frac{1}{(n-1)!} \prod_{j=1}^{n-1} (k+j) + 1\\
+    &= 10^{n-1} + 1 - \frac{1}{(n-1)!} \Bigg(\prod_{i=10}^{8+n} (i-k) + \prod_{j=1}^{n-1} (k+j) \Bigg)
+\end{align*}
+The final formulas for all of the 4 functions are:
+\begin{align}
+    inc_n(k) &= \frac{1}{(n-1)!} \prod_{i=10}^{8+n} (i-k) \label{eq8} \\
+    dec_n(k) &= \frac{1}{(n-1)!} \prod_{j=1}^{n-1} (k+j) - 1 \label{eq9}\\
+    f_n(k) &= \frac{1}{(n-1)!} \Bigg(\prod_{i=10}^{8+n} (i-k) + \prod_{j=1}^{n-1} (k+j) \Bigg) - 1 \label{eq10}\\
+    g_n(k) &= 10^{n-1} + 1 - \frac{1}{(n-1)!} \Bigg(\prod_{i=10}^{8+n} (i-k) + \prod_{j=1}^{n-1} (k+j) \Bigg) \label{eq11}
+\end{align}
+
+\section{Evaluation}
+In the end, I was able to derive a function, $g_n(k)$, which can be used to count how many $n$-digit bouncy numbers exist by splitting the range of n-digit numbers into 10 equal ranges. However, due to the fact that leading zeros are counted as digits to make calculations easier, the functions should not be used with $k=0$ as it will not give any meaningful result. The only function which works in this specific case is $inc_n$ as $0$ is the least valued digit so it will never affect the increasing order of digits.\\\\
+One drawback of my solution is that the way these functions work, it is difficult to count how many bouncy numbers exist in a range if the boundaries are not of the form $a \times 10^{b}$, where $a$ and $b$ are both single digit non-negative integers. However, it is not impossible, as through the continued summation of these functions with specific $n$ and $k$ values you could count how many bouncy numbers exist in any given range. It would be easier to work with $f_n$ once again and then find its complement to count bouncy numbers.\\\\
+An extension to this topic would be to try and derive a function with more customizable boundaries by either further going down this path which I explored in this paper or by tackling the problem from a different angle to gain some new insight.\\\\
+Another extension would be to further explore mathematically the claim which I made by looking at figure \ref{fig:graphs} of the graphical analysis where I said that $\lim_{x \Rightarrow  \infty}\frac{b(x)}{x+1} = 1$ where $b(x) = \text{amount of bouncy numbers} \leq x$.\\\\
+Finally, further expanding these results to other number bases and then comparing how the amount of bouncy numbers grows between the different number bases would be an interesting extension.
+
+\section{Conclusion}
+In conclusion, I was able to make use of my coding skills to graphically analyse the behaviour of the bouncy number function which gave me a clue as to how to start my mathematical analysis. After setting up some definitions to structure my analysis I was able to create multiple relations between the defined concepts which I took advantage of to evaluate my functions for small values. This allowed me to observe a pattern in the $inc_n$ function which I utilised and was able to prove using induction. Finally, gathering all my results I ended up defining the final function \ref{eq11} which counts bouncy numbers in a limited range and is based on \ref{eq8}, \ref{eq9} and \ref{eq10}.
+
+\section{References}
+\begin{thebibliography}{4}
+    \bibitem{OEIS}
+    Abela J. \& Schoenfield J., \textit{Bouncy Numbers}, Entry A152054 in The On-Line Encyclopedia of Integer Sequences, \url{https://oeis.org/A152054}.
+
+    \bibitem{ProjectEuler112}
+    "Bouncy Numbers." Project Euler, 30 December 2005, \url{https://projecteuler.net/problem=112}.
+    
+    \bibitem{ProjectEuler113}
+    "Non-bouncy Numbers." Project Euler, 10 February 2006, \url{https://projecteuler.net/problem=113}.
+
+    \bibitem{Formulas}
+    Kerl, John. Induction and the Sum of Consecutive Squares, spring 2006, \url{johnkerl.org/doc/induction.pdf}. 
+\end{thebibliography}
+
+\newpage
+
+\section{Appendix}
+These are the functions which I wrote in C++ which helped me collect data and make graphs out of the them
+\begin{verbatim}
+bool is_non_bouncy(const int n) {
+    if (n < 0) return false;
+    if (n <= 100) return true;
+    string s = to_string(n);
+    bool increasing = (s[0] < s[s.length()-1]);
+    for (int i = 0; i<s.length()-1; i++) {
+        if (increasing && s[i] > s[i+1]) return false;
+        else if (!increasing && s[i] < s[i+1]) return false;
+    }
+    return true;
+}
+
+bool increasing(const int n) {
+    if (n < 0) return false;
+    string s = to_string(n);
+    for (int i = 0; i<s.length()-1; i++) {
+        if (s[i] > s[i+1]) return false;
+    }
+    return true;
+}
+
+int increasing(const int l, const int r) {
+     int total = 0;
+    for (int i = l; i<=r; i++) {
+        if (increasing(i)) total++;
+    }
+    return total;
+}
+
+int non_bouncy(const int l, const int r) {
+    int total = 0;
+    for (int i = l; i<=r; i++) {
+        if (is_non_bouncy(i)) total++;
+    }
+    return total;
+}
+
+int bouncy(const int l, const int r) {
+    return (r-l+1)-non_bouncy(l, r);
+}
+\end{verbatim}
+\noindent
+\\
+This is the MatLab code which graphed the results produced by the C++ code
+\begin{verbatim}
+x = linspace(0, 1000000, 1000001);
+y = <data from C++ program>
+plot(x,y);
+title('Amount of Bouncy Numbers');
+hold on
+plot(x,x+1, 'yellow');
+\end{verbatim}
+\end{document}
