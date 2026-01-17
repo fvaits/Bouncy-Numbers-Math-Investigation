@@ -1,0 +1,11 @@
+*.aux
+*.bbl
+*.dvi
+*.bbl-SAVE-ERROR
+*.fdb_latexmk
+*.log
+*.fls
+*.pdf
+*.out
+*.toc
+*.gz
