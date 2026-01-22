@@ -265,6 +265,14 @@ This is a recursive way of calculating $inc_n$, if we expand it further we get:
 \end{align*}
 Let's assume that this formula works for $n=m$.
 
+\subsection{Base Case}
+The base case for this hypothesis will be when $n=1$. We can test it out:
+\begin{align*}
+    inc_1(k) &= \frac{1}{(1-1)!} \prod_{i=10}^{8+1} (i-k)\\
+    &= \prod_{i=10}^{9} (i-k) = 1
+\end{align*}
+The product is evaluated like that because the lower bound of the product is greater than the upper bound, which produces an empty product(=1). $inc_1$ is indeed equal to just 1 so this formula holds true for the base case.
+
 \subsection{Inductive Step}
 Now to prove that it is true for $n=m+1$, we need to prove:
 \[inc_{m+1}(k) = \frac{1}{m!} \prod_{i=10}^{9+m} (i-k)\]
@@ -304,15 +312,7 @@ Getting back to equation \ref{eq7} and plugging in our findings we get:
     &= \frac{1}{m!}\prod_{p=0}^{m-1}(10-k+p)\\
     &= \frac{1}{m!}\prod_{i=10}^{m+9}(i-k)
 \end{align*}
-This is the result we were looking for. \\\\
-The only base case we haven't checked for is when $n=1$, we can simply test if it works:
-\begin{align*}
-    inc_1(k) &= \frac{1}{(1-1)!} \prod_{i=10}^{8+1} (i-k)\\
-    &= \prod_{i=10}^{9} (i-k) = 1
-\end{align*}
-The product is evaluated like that because the lower bound of the product is greater than the upper bound, which produces an empty product(=1). $inc_1$ is indeed equal to just 1 so this formula holds true for all valid $n$ and $k$.
-\break \noindent
-Hence, by the principle of mathematical induction, it is proved that for all $n\geq 1$, the statement $inc_n$ is true.
+This is the result we were looking for. Hence, by the principle of mathematical induction, it is proved that for all $n\geq 1$, the statement $inc_n$ is true.
 
 \section{Final Formulas}
 Having derived a formula for the $inc_n$ function, we can also figure out what is $dec_n$ using \ref{eq2}:
@@ -329,12 +329,12 @@ The mathematical definition is:
     &= 10^{n-1} - \frac{1}{(n-1)!} \prod_{i=10}^{8+n} (i-k) - \frac{1}{(n-1)!} \prod_{j=1}^{n-1} (k+j) + 1\\
     &= 10^{n-1} + 1 - \frac{1}{(n-1)!} \Bigg(\prod_{i=10}^{8+n} (i-k) + \prod_{j=1}^{n-1} (k+j) \Bigg)
 \end{align*}
-The final formulas for all of the 4 functions are:
+After making some small adjustments to the formulas, the final versions for all of the 4 functions are:
 \begin{align}
-    inc_n(k) &= \frac{1}{(n-1)!} \prod_{i=10}^{8+n} (i-k) \label{eq8} \\
+    inc_n(k) &= \frac{1}{(n-1)!} \prod_{i=1}^{n-1} (i-k+9) \label{eq8} \\
     dec_n(k) &= \frac{1}{(n-1)!} \prod_{j=1}^{n-1} (k+j) - 1 \label{eq9}\\
-    f_n(k) &= \frac{1}{(n-1)!} \Bigg(\prod_{i=10}^{8+n} (i-k) + \prod_{j=1}^{n-1} (k+j) \Bigg) - 1 \label{eq10}\\
-    g_n(k) &= 10^{n-1} + 1 - \frac{1}{(n-1)!} \Bigg(\prod_{i=10}^{8+n} (i-k) + \prod_{j=1}^{n-1} (k+j) \Bigg) \label{eq11}
+    f_n(k) &= \frac{1}{(n-1)!} \Bigg(\prod_{i=1}^{n-1} (i-k+9) + \prod_{j=1}^{n-1} (k+j) \Bigg) - 1 \label{eq10}\\
+    g_n(k) &= 10^{n-1} + 1 - \frac{1}{(n-1)!} \Bigg(\prod_{i=1}^{n-1} (i-k+9) + \prod_{j=1}^{n-1} (k+j) \Bigg) \label{eq11}
 \end{align}
 
 \section{Evaluation}
