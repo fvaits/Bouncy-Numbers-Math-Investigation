@@ -36,7 +36,7 @@
 \makeatother
 
 \newpage
-
+\small
 \tableofcontents
 \pagestyle{empty}
 \newpage
@@ -224,7 +224,7 @@ After figuring out these two functions for $n=4$, I realised that this was not g
 
 \section{Proof by Induction}
 We seem to be getting quite different $f_n$ functions for each calculated n, but there is a pattern that is emerging for the $inc_n$ function. What if we could take advantage of that?
-
+\break
 \setlength{\cellspacetoplimit}{6pt}
 \setlength{\cellspacebottomlimit}{6pt}
 \renewcommand{\arraystretch}{2}
@@ -343,9 +343,11 @@ After making some small adjustments to the formulas, the final versions for all 
     g_n(k) &= 10^{n-1} + 1 - \frac{1}{(n-1)!} \Bigg(\prod_{i=1}^{n-1} (i-k+9) + \prod_{j=1}^{n-1} (k+j) \Bigg) \label{eq11}
 \end{align}
 
+\newpage
 
 \section{Bouncy Numbers Analysis}
-After having derived a formula for counting the amount of bouncy numbers, we can also study the function's behaviour a bit through a table of values.
+After having derived a formula for counting the amount of bouncy numbers, we can also study the function's behaviour a bit through a table of values.\\
+
 \begin{table}[htb]
     \footnotesize
     \begin{tabular}{l|lllllllll}
@@ -371,9 +373,6 @@ Another noteworthy behvaiour of this function is that it peaks around its symmet
 \noindent
 Finally, it is evident that as $n$ grows so does the density of bouncy numbers which makes sense from the probabilities perspective as it becomes less and less probable that a random sequence of $n$-digits will be completely ordered. This is also supported by the findings of the Graphical Analysis section where I arrived to similar conclusions.
 
-
-
-
 \section{Evaluation}
 In the end, I was able to derive a function, $g_n(k)$, which can be used to count how many $n$-digit bouncy numbers exist by splitting the range of $n$-digit numbers into 10 equal ranges. However, due to the fact that leading zeros are counted as digits to make calculations easier, the functions should not be used with $k=0$ as it will not give any meaningful result. The only function which works in this specific case is $inc_n$ as $0$ is the least valued digit so it will never affect the increasing order of digits.\\\\
 One drawback of my solution is that the way these functions work, it is difficult to count how many bouncy numbers exist in a range if the boundaries are not of the form $a \times 10^{b}$, where $a$ and $b$ are both single digit non-negative integers. However, it is not impossible, as through the continued summation of these functions with specific $n$ and $k$ values you could count how many bouncy numbers exist in any given range. It would be easier to work with $f_n$ once again and then find its complement to count bouncy numbers.\\\\
@@ -387,6 +386,7 @@ In conclusion, I was able to make use of my coding skills to graphically analyse
 \newpage
 
 \section{References}
+
 \begin{thebibliography}{4}
     \bibitem{OEIS}
     Abela J. \& Schoenfield J., \textit{Bouncy Numbers}, Entry A152054 in The On-Line Encyclopedia of Integer Sequences, \url{https://oeis.org/A152054}.
@@ -398,7 +398,7 @@ In conclusion, I was able to make use of my coding skills to graphically analyse
     "Non-bouncy Numbers." Project Euler, 10 February 2006, \url{https://projecteuler.net/problem=113}.
 
     \bibitem{Formulas}
-    Kerl, John. Induction and the Sum of Consecutive Squares, spring 2006, \url{johnkerl.org/doc/induction.pdf}. 
+    Kerl, John. Induction and the Sum of Consecutive Squares, spring 2006, \url{https://johnkerl.org/doc/induction.pdf}. 
 \end{thebibliography}
 
 \newpage
@@ -453,9 +453,9 @@ This is the MatLab code which graphed the results produced by the C++ code
 \begin{verbatim}
 x = linspace(0, 1000000, 1000001);
 y = <data from C++ program>
-plot(x,y);
+plot(x,y, "blue");
 title('Amount of Bouncy Numbers');
 hold on
-plot(x,x+1, 'yellow');
+plot(x,x+1, 'red');
 \end{verbatim}
 \end{document}
