@@ -21,9 +21,6 @@ This investigation derives a closed-form formula for counting the n-digit bouncy
 ## Result
 
 For $1 \le k \le 9$ and $n \ge 1$:
-
-$$\text{inc}_n(k) = \frac{1}{(n-1)!}\prod_{i=1}^{n-1}(i-k+9)$$
-
 $$g_n(k) = 10^{n-1} + 1 - \frac{1}{(n-1)!}\left(\prod_{i=1}^{n-1}(i-k+9) + \prod_{j=1}^{n-1}(k+j)\right)$$
 
 where $g_n(k)$ is the number of n-digit bouncy numbers with leading digit k.
