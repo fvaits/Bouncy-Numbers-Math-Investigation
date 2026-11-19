@@ -55,7 +55,7 @@ The aim of this paper is to derive a mathematical formula that will count how ma
 I chose to investigate this topic because I have a great passion for mathematical challenges. I first stumbled upon two simpler versions of this problem\cite{ProjectEuler112}\cite{ProjectEuler113} on a website called ProjectEuler which has an archive of hard maths and coding problems.
 The concept of bouncy numbers which they introduced fascinated me. Therefore, I decided to take it a step further and explore more formulas and relations of these numbers through my Internal Assessment in mathematics.
 
-\section{Mathmatical Concepts}
+\section{Mathematical Concepts}
 Throughout this investigation I am going to be using a lot of repeated summations and multiplications using the $\sum$ and $\prod$ notation. The capital sigma used for summation simply means:
 \[\sum_{i=a}^{b} f(i) = f(a) + f(a+1) + ... + f(b), \text{where } a \leq b\]
 The same goes for the capital pi symbol but instead of summing up the functions it multiplies them:
@@ -97,17 +97,17 @@ First of all, I wanted to get an idea of how fast the number of bouncy numbers g
         \caption{$x\in[0,10^6]$}
     \end{subfigure}
 
-    \caption{\label{fig:graphs} Graphs of $y=\text{number of bouncy numbers below } x$(blue) vs $y=x+1$(yellow) for different domains}
+    \caption{\label{fig:graphs} Graphs of $y=\text{number of bouncy numbers below } x$(blue) vs $y=x+1$(red) for different domains}
 \end{figure}
 
 \noindent
-From graph (a) we can see that there are no bouncy numbers bellow 100. This makes sense as when you have any two digit number, the first digit is either greater than, smaller than or equal to the second. Thererfore, all 2-digit integers are non-bouncy. This means that the first bouncy number is 101.
+From graph (a) we can see that there are no bouncy numbers below 100. This makes sense as when you have any two digit number, the first digit is either greater than, smaller than or equal to the second. Therefore, all 2-digit integers are non-bouncy. This means that the first bouncy number is 101.
 \\
 \\
 By observing all 4 graphs we can see how the frequency of bouncy numbers increases the more we expand the domain. This means that there are increasingly more bouncy than non-bouncy numbers as you consider greater and greater domains. This makes intuitive sense as if you were to pick a random $n$-digit number, the more digits it has, the lower the chance its digits will be ordered. So while the blue graph starts to resemble a linear graph as we consider greater numbers, in reality, its slope between the origin and a point on the graph tends to increase as $x$ increases but it will never become greater than 1, which is the slope of the $y=x+1$ line, as it can never gain more than 1 bouncy number per 1 new number considered. Furthermore, since this function is cumulative, it will keep increasing(or staying constant) as x increases.
 \\
 \\
-If the blue graph were to be described by the function $b(x)$, then the previous statements can be described mathematically as $0 \leq \frac{d}{dx}b(x) \leq 1$, $b(x) < x+1$ and $\lim_{x \Rightarrow  \infty}\frac{b(x)}{x+1} = 1$.
+If the blue graph were to be described by the function $b(x)$, then the previous statements can be described mathematically as $0 \leq \frac{d}{dx}b(x) \leq 1$, $b(x) < x+1$ and $\lim_{x \to  \infty}\frac{b(x)}{x+1} = 1$.
 \\
 \\
 These findings do not allow me to derive a formula directly, however, it is evident that there is a change in the behaviour of the blue graph as we considered numbers of increasingly more digits.
@@ -369,7 +369,7 @@ After having derived a formula for counting the amount of bouncy numbers, we can
 \noindent
 After observing the table above it is clear that for each $n$, the results are symmetrical with the $k$ values of 4 and 5 as the center of the symmetry and the $k=9$ value being the odd one out. This result makes sense because the $g_n$ function is based on the $f_n$ function which is defined in \ref{eq3} as $f_n(k) = inc_n(k) + inc_n(9-k) - 1$ which makes $f_n$ symmetrical theoretically at $k=4.5$ due to $k$ and $9-k$ being passed as parameters to $inc_n$. At $k=1$, $9-k$ is $8$ and at $k=8$, $9-k$ is $1$ and so on and so forth for all other pair of values. This means that the odd one out being $9$ is because I simply didn't include the $k=0$ value into the table, which would have been its symmetrical pair.\\\\
 \noindent
-Another noteworthy behvaiour of this function is that it peaks around its symmetry point, with $k=4$ and $k=5$ producing the largest values for every $n$. Probability wise this fact is supported as it gets more difficult to get a random sequence of $(n-1)$ digits ordered when the preceding digit is 4 or 5, as you have already cut off about half the combinations.\\\\
+Another noteworthy behaviour of this function is that it peaks around its symmetry point, with $k=4$ and $k=5$ producing the largest values for every $n$. Probability wise this fact is supported as it gets more difficult to get a random sequence of $(n-1)$ digits ordered when the preceding digit is 4 or 5, as you have already cut off about half the combinations.\\\\
 \noindent
 Finally, it is evident that as $n$ grows so does the density of bouncy numbers which makes sense from the probabilities perspective as it becomes less and less probable that a random sequence of $n$-digits will be completely ordered. This is also supported by the findings of the Graphical Analysis section where I arrived to similar conclusions.
 
@@ -377,7 +377,7 @@ Finally, it is evident that as $n$ grows so does the density of bouncy numbers w
 In the end, I was able to derive a function, $g_n(k)$, which can be used to count how many $n$-digit bouncy numbers exist by splitting the range of $n$-digit numbers into 10 equal ranges. However, due to the fact that leading zeros are counted as digits to make calculations easier, the functions should not be used with $k=0$ as it will not give any meaningful result. The only function which works in this specific case is $inc_n$ as $0$ is the least valued digit so it will never affect the increasing order of digits.\\\\
 One drawback of my solution is that the way these functions work, it is difficult to count how many bouncy numbers exist in a range if the boundaries are not of the form $a \times 10^{b}$, where $a$ and $b$ are both single digit non-negative integers. However, it is not impossible, as through the continued summation of these functions with specific $n$ and $k$ values you could count how many bouncy numbers exist in any given range. It would be easier to work with $f_n$ once again and then find its complement to count bouncy numbers.\\\\
 An extension to this topic would be to try and derive a function with more customizable boundaries by either further going down this path which I explored in this paper or by tackling the problem from a different angle to gain some new insight.\\\\
-Another extension would be to further explore mathematically the claim which I made by looking at figure \ref{fig:graphs} of the graphical analysis where I said that $\lim_{x \Rightarrow  \infty}\frac{b(x)}{x+1} = 1$ where $b(x) = \text{amount of bouncy numbers} \leq x$.\\\\
+Another extension would be to further explore mathematically the claim which I made by looking at figure \ref{fig:graphs} of the graphical analysis where I said that $\lim_{x \to  \infty}\frac{b(x)}{x+1} = 1$ where $b(x) = \text{amount of bouncy numbers} \leq x$.\\\\
 Finally, further expanding these results to other number bases and then comparing how the amount of bouncy numbers grows between the different number bases would be an interesting extension.
 
 \section{Conclusion}
